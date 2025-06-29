@@ -32,12 +32,40 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(gilded_rose.items[0].sell_in, -1)
         self.assertEqual(gilded_rose.items[0].quality, 18)
 
-    def test_update_ordinary_item_after_sell_date(self):
+    def test_update_ordinary_item_after_sell_by_date(self):
         items = [Item("Elixir of the Mongoose", -1, 20)]
         gilded_rose = GildedRose(items)
         gilded_rose.update_quality()
         self.assertEqual(gilded_rose.items[0].sell_in, -2)
         self.assertEqual(gilded_rose.items[0].quality, 18)
+
+    def test_update_ordinary_item_zero_quality_before_sell_by_date(self):
+        items = [Item("Elixir of the Mongoose", 10, 0)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
+
+    def test_update_ordinary_item_zero_quality_after_sell_by_date(self):
+        items = [Item("Elixir of the Mongoose", -1, 0)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
+
+    def test_update_ordinary_item_low_quality_before_sell_by_date(self):
+        items = [Item("Elixir of the Mongoose", 10, 1)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
+
+    def test_update_ordinary_item_low_quality_after_sell_by_date(self):
+        items = [Item("Elixir of the Mongoose", -1, 1)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
 
 if __name__ == '__main__':
     unittest.main()
