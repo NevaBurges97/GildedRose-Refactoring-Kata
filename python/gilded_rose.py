@@ -24,7 +24,7 @@ class GildedRose(object):
                 if item.sell_in < 5:
                     self.increase_quality(item)
                 if item.sell_in < 0:
-                    item.quantity = 0
+                    item.quality = 0
             elif item.name == "Aged Brie":
                 self.increase_quality(item)
                 if item.sell_in < 0:
