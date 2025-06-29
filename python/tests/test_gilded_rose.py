@@ -67,5 +67,47 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(gilded_rose.items[0].sell_in, -2)
         self.assertEqual(gilded_rose.items[0].quality, 0)
 
+    def test_update_aged_brie(self):
+        items = [Item("Aged Brie", 10, 20)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 21)
+
+    def test_update_aged_brie_highest_quality(self):
+        items = [Item("Aged Brie", 10, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+
+    def test_update_aged_brie_on_sell_by_date(self):
+        items = [Item("Aged Brie", 0, 20)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -1)
+        self.assertEqual(gilded_rose.items[0].quality, 22)
+
+    def test_update_aged_brie_after_sell_by_date(self):
+        items = [Item("Aged Brie", -1, 20)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 22)
+
+    def test_update_aged_brie_highest_quality_before_sell_by_date(self):
+        items = [Item("Aged Brie", 10, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+
+    def test_update_aged_brie_highest_quality_after_sell_by_date(self):
+        items = [Item("Aged Brie", -1, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+
 if __name__ == '__main__':
     unittest.main()
