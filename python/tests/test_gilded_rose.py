@@ -172,5 +172,26 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(gilded_rose.items[0].sell_in, -2)
         self.assertEqual(gilded_rose.items[0].quality, 0)
 
+    def test_update_backstage_passes_highest_quality_before_concert(self):
+        items = [Item("Backstage passes to a TAFKAL80ETC concert", 15, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 14)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+
+    def test_update_backstage_passes_highest_quality_1_day_before_concert(self):
+        items = [Item("Backstage passes to a TAFKAL80ETC concert", 1, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 0)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+
+    def test_update_backstage_passes_highest_quality_after_concert(self):
+        items = [Item("Backstage passes to a TAFKAL80ETC concert", -1, 50)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
+
 if __name__ == '__main__':
     unittest.main()
