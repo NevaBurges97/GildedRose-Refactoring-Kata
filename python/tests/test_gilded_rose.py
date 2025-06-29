@@ -74,13 +74,6 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(gilded_rose.items[0].sell_in, 9)
         self.assertEqual(gilded_rose.items[0].quality, 21)
 
-    def test_update_aged_brie_highest_quality(self):
-        items = [Item("Aged Brie", 10, 50)]
-        gilded_rose = GildedRose(items)
-        gilded_rose.update_quality()
-        self.assertEqual(gilded_rose.items[0].sell_in, 9)
-        self.assertEqual(gilded_rose.items[0].quality, 50)
-
     def test_update_aged_brie_on_sell_by_date(self):
         items = [Item("Aged Brie", 0, 20)]
         gilded_rose = GildedRose(items)
@@ -108,6 +101,20 @@ class GildedRoseTest(unittest.TestCase):
         gilded_rose.update_quality()
         self.assertEqual(gilded_rose.items[0].sell_in, -2)
         self.assertEqual(gilded_rose.items[0].quality, 50)
+
+    def test_update_aged_brie_high_quality_after_sell_by_date(self):
+        items = [Item("Aged Brie", -1, 49)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -2)
+        self.assertEqual(gilded_rose.items[0].quality, 50)
+    
+    def test_update_sulfuras(self):
+        items = [Item("Sulfuras, Hand of Ragnaros", 0, 80)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 0)
+        self.assertEqual(gilded_rose.items[0].quality, 80)
 
 if __name__ == '__main__':
     unittest.main()
