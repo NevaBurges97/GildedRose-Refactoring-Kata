@@ -193,5 +193,26 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(gilded_rose.items[0].sell_in, -2)
         self.assertEqual(gilded_rose.items[0].quality, 0)
 
+    def test_update_conjured_item(self):
+        items = [Item("Conjured Mana Cake", 3, 6)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 2)
+        self.assertEqual(gilded_rose.items[0].quality, 4)
+
+    def test_update_conjured_item_after_sell_by_date(self):
+        items = [Item("Conjured Mana Cake", 0, 6)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, -1)
+        self.assertEqual(gilded_rose.items[0].quality, 2)
+
+    def test_update_conjured_item_low_quality(self):
+        items = [Item("Conjured Mana Cake", 10, 1)]
+        gilded_rose = GildedRose(items)
+        gilded_rose.update_quality()
+        self.assertEqual(gilded_rose.items[0].sell_in, 9)
+        self.assertEqual(gilded_rose.items[0].quality, 0)
+
 if __name__ == '__main__':
     unittest.main()
