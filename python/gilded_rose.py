@@ -14,46 +14,46 @@ class Item:
 
 class BaseItem(Item):
     def __init__(self, item: Item):
-        super().__init__(item.name, item.sell_in, item.quality)
+        self.item = item
 
     @abstractmethod
     def update_quality():
         pass
-    
+
     def decrease_quality(self):
-        if self.quality > 0:
-            self.quality -= 1
+        if self.item.quality > 0:
+            self.item.quality -= 1
 
     def increase_quality(self):
-        if self.quality < 50:
-            self.quality += 1
+        if self.item.quality < 50:
+            self.item.quality += 1
 
 
 class OrdinaryItem(BaseItem):
     def update_quality(self):
-        self.sell_in -= 1
+        self.item.sell_in -= 1
         self.decrease_quality()
-        if self.sell_in < 0:
+        if self.item.sell_in < 0:
             self.decrease_quality()
 
 
 class BackstagePasses(BaseItem):
     def update_quality(self):
-        self.sell_in -= 1
+        self.item.sell_in -= 1
         self.increase_quality()
-        if self.sell_in < 10:
+        if self.item.sell_in < 10:
             self.increase_quality()
-        if self.sell_in < 5:
+        if self.item.sell_in < 5:
             self.increase_quality()
-        if self.sell_in < 0:
-            self.quality = 0
+        if self.item.sell_in < 0:
+            self.item.quality = 0
 
 
 class AgedBrie(BaseItem):
     def update_quality(self):
-        self.sell_in -= 1
+        self.item.sell_in -= 1
         self.increase_quality()
-        if self.sell_in < 0:
+        if self.item.sell_in < 0:
             self.increase_quality()
 
 
@@ -63,19 +63,20 @@ class Sulfuras(BaseItem):
 
 
 class GildedRose(object):
-    ITEM_CLASSES = {
-        "Aged Brie": AgedBrie,
-        "Backstage passes to a TAFKAL80ETC concert": BackstagePasses,
-        "Sulfuras, Hand of Ragnaros": Sulfuras
-    }
-
     def __init__(self, items: list[Item]):
-        self.items: list[BaseItem] = [self.create_item(item) for item in items]
+        self.items = items
 
-    def create_item(self, item: Item):
-        item_class = self.ITEM_CLASSES.get(item.name, OrdinaryItem)
-        return item_class(item)
+    def get_item_class(self, item: Item):
+        if item.name == "Aged Brie":
+            return AgedBrie(item)
+        elif item.name == "Backstage passes to a TAFKAL80ETC concert":
+            return BackstagePasses(item)
+        elif item.name == "Sulfuras, Hand of Ragnaros":
+            return Sulfuras(item)
+        else:
+            return OrdinaryItem(item)
     
     def update_quality(self):
         for item in self.items:
-            item.update_quality()
+            item_class = self.get_item_class(item)
+            item_class.update_quality()
