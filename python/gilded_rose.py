@@ -20,33 +20,33 @@ class BaseItem(Item):
     def update_quality():
         pass
 
-    def decrease_quality(self):
-        if self.item.quality > 0:
-            self.item.quality -= 1
+    def decrease_quality(self, amount=1):
+        self.item.quality = max(self.item.quality - amount, 0)
 
-    def increase_quality(self):
-        if self.item.quality < 50:
-            self.item.quality += 1
+    def increase_quality(self, amount=1):
+        self.item.quality = min(self.item.quality + amount, 50)
 
 
 class OrdinaryItem(BaseItem):
     def update_quality(self):
         self.item.sell_in -= 1
-        self.decrease_quality()
-        if self.item.sell_in < 0:
-            self.decrease_quality()
+        if self.item.sell_in >= 0:
+            self.decrease_quality(1)
+        else:
+            self.decrease_quality(2)
 
 
 class BackstagePasses(BaseItem):
     def update_quality(self):
         self.item.sell_in -= 1
-        self.increase_quality()
-        if self.item.sell_in < 10:
-            self.increase_quality()
-        if self.item.sell_in < 5:
-            self.increase_quality()
         if self.item.sell_in < 0:
             self.item.quality = 0
+        elif self.item.sell_in < 5:
+            self.increase_quality(3)
+        elif self.item.sell_in < 10:
+            self.increase_quality(2)
+        else:
+            self.increase_quality(1)
 
 
 class AgedBrie(BaseItem):
@@ -62,6 +62,15 @@ class Sulfuras(BaseItem):
         pass
 
 
+class ConjuredItem(BaseItem):
+    def update_quality(self):
+        self.item.sell_in -= 1
+        if self.item.sell_in < 0:
+            self.decrease_quality(4)
+        else:
+            self.decrease_quality(2)
+
+
 class GildedRose(object):
     def __init__(self, items: list[Item]):
         self.items = items
@@ -73,6 +82,8 @@ class GildedRose(object):
             return BackstagePasses(item)
         elif item.name == "Sulfuras, Hand of Ragnaros":
             return Sulfuras(item)
+        elif item.name.startswith("Conjured"):
+            return ConjuredItem(item)
         else:
             return OrdinaryItem(item)
     
